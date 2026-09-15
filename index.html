@@ -9,16 +9,18 @@
 <link href="https://fonts.googleapis.com/css2?family=Rozha+One&family=Yatra+One&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --wall:#E7D3A0;
-    --wall-deep:#D8BD84;
-    --band:#6B2A1D;
-    --band-deep:#4A1C12;
-    --ink:#211508;
-    --red:#A63A2A;
+    /* retuned to the sampled palette of the hero photo: dark umber wood,
+       rust-toned mural, and warm golden-hour highlights */
+    --wall:#E4C89A;
+    --wall-deep:#C9A366;
+    --band:#4A2410;
+    --band-deep:#2E150A;
+    --ink:#1C0F04;
+    --red:#8A3220;
     --green:#4F7942;
     --grey:#8C9A9C;
-    --ochre:#C98A3E;
-    --cream:#F6ECD2;
+    --ochre:#B8823F;
+    --cream:#F3E4C4;
   }
   *{box-sizing:border-box;}
   html{background:var(--wall);}
@@ -174,16 +176,14 @@
     text-align:center;
     padding:110px 5vw 150px;
   }
-  /* Hero background photo. hero-bg.jpg isn't added yet — until it is, this
-     falls back to the plain wall gradient set on .hero-inner below, so
-     nothing looks broken in the meantime. */
+  /* Hero background: the riverside/mural photo. */
   .hero-photo{
     position:absolute;
     inset:0;
     z-index:0;
-    background-image:url('hero-bg.jpg');
+    background-image:url('hero-bg.png');
     background-size:cover;
-    background-position:center;
+    background-position:center 40%;
   }
   .hero-inner{
     background:
