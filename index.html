@@ -93,6 +93,11 @@
     border:1px solid rgba(246,236,210,.35);
   }
   .pill-support:hover{background:var(--red);}
+  .pill-request{
+    background:rgba(184,130,63,.85);
+    border:1px solid rgba(246,236,210,.35);
+  }
+  .pill-request:hover{background:var(--ochre);}
 
   /* ---------- support-us modal ---------- */
   .app-modal{
@@ -226,6 +231,22 @@
     100%{box-shadow:0 0 0 0 rgba(61,220,132,0);}
   }
   .online-label{font-weight:400; color:rgba(246,236,210,.6); font-size:12px;}
+  .listening-pill{
+    position:absolute;
+    z-index:2;
+    top:66px; left:24px;
+    max-width:min(80vw, 320px);
+    background:rgba(20,12,4,.65);
+    border:1px solid rgba(246,236,210,.2);
+    border-radius:999px;
+    padding:6px 14px;
+    font-size:11.5px;
+    color:rgba(246,236,210,.8);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  #listeningTrack{color:var(--ochre); font-weight:600;}
   .hero h1{
     position:relative;
     z-index:2;
@@ -368,6 +389,8 @@
   }
   .play-btn:hover{background:#dba05a;}
   .play-btn svg{width:16px; height:16px; fill:currentColor;}
+  .fav-btn svg{width:15px; height:15px;}
+  .fav-btn.active{background:rgba(166,58,42,.35); border-color:var(--red); color:#ff8a72;}
   .glass-note{
     font-size:10.5px;
     color:#e8a878;
@@ -514,6 +537,37 @@
     margin:0;
   }
 
+  /* ---------- trending ---------- */
+  .trend-empty{color:rgba(33,21,8,.5); font-size:.92rem; text-align:center;}
+  .trend-row{
+    display:grid; grid-template-columns:36px 1fr auto; align-items:center; gap:16px;
+    padding:14px 12px; border-radius:8px; cursor:pointer;
+  }
+  .trend-row:nth-child(odd){background:rgba(33,21,8,.04);}
+  .trend-row:hover{background:rgba(166,58,42,.09);}
+  .trend-rank{font-family:'Rozha One', serif; color:var(--band); opacity:.6; font-size:1.1rem; text-align:center;}
+  .trend-main .t-title{font-weight:600; font-size:1rem;}
+  .trend-main .t-artist{font-size:.82rem; color:rgba(33,21,8,.55); margin-top:2px;}
+  .trend-plays{font-size:.8rem; color:rgba(33,21,8,.5); white-space:nowrap; font-family:monospace;}
+
+  /* ---------- request-a-song modal form ---------- */
+  .req-field{
+    display:block;
+    width:100%;
+    margin:0 0 14px;
+    padding:11px 14px;
+    border-radius:8px;
+    border:1.5px solid rgba(33,21,8,.25);
+    background:rgba(255,255,255,.5);
+    color:var(--ink);
+    font-family:'Space Grotesk', sans-serif;
+    font-size:.92rem;
+  }
+  .req-field:focus{outline:none; border-color:var(--red);}
+  .req-status{font-size:.85rem; margin-top:12px; min-height:1.2em;}
+  .req-status.ok{color:var(--green);}
+  .req-status.err{color:var(--red);}
+
   /* ---------- FAQ / guide ---------- */
   .faq-item{
     border-bottom:1px solid rgba(33,21,8,.12);
@@ -587,9 +641,27 @@
       <svg viewBox="0 0 24 24" width="14" height="14" style="margin-right:6px; fill:currentColor;"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.39 1.26 4.81L2 22l5.42-1.34a9.9 9.9 0 0 0 4.62 1.14h.01c5.46 0 9.91-4.45 9.91-9.91C21.96 6.45 17.5 2 12.04 2zm5.78 14.1c-.24.68-1.4 1.3-1.93 1.36-.5.06-1.02.29-3.42-.72-2.9-1.22-4.78-4.14-4.92-4.33-.14-.19-1.18-1.57-1.18-3 0-1.42.75-2.12 1.02-2.41.27-.29.58-.36.78-.36.19 0 .39 0 .56.01.18.01.42-.07.66.5.24.58.82 2 .89 2.14.07.14.12.31.02.5-.1.19-.15.31-.3.48-.15.17-.31.38-.44.51-.15.15-.3.31-.13.6.17.29.75 1.24 1.62 2.01 1.12.99 2.06 1.3 2.35 1.45.29.14.46.12.63-.07.17-.19.72-.84.92-1.13.19-.29.39-.24.65-.14.27.1 1.7.8 1.99.94.29.14.48.21.55.33.07.12.07.68-.17 1.36z"/></svg>
       Share
     </a>
+    <button class="pill pill-request" id="requestOpen" type="button">🎵 Request a song</button>
     <button class="pill pill-support" id="supportOpen" type="button">♥ Support us</button>
   </nav>
 </header>
+
+<div class="app-modal" id="requestModal">
+  <div class="app-modal-card">
+    <button class="modal-close" id="requestClose" aria-label="Close">&times;</button>
+    <div class="modal-heart">🎵</div>
+    <h2>Request a song</h2>
+    <p>Paste a YouTube link to a Sadri, Nagpuri, or Kurukh track you want on the
+       station. Requests are reviewed by hand before going live — this isn't
+       an auto-add.</p>
+    <form id="requestForm">
+      <input class="req-field" type="url" id="reqUrl" placeholder="https://www.youtube.com/watch?v=…" required>
+      <input class="req-field" type="text" id="reqNote" placeholder="Song name / your name (optional)" maxlength="120">
+      <button class="btn btn-primary" type="submit" id="reqSubmitBtn" style="width:100%;">Send request</button>
+      <p class="req-status" id="reqStatus"></p>
+    </form>
+  </div>
+</div>
 
 <div class="app-modal" id="supportModal">
   <div class="app-modal-card">
@@ -623,10 +695,15 @@
         <span class="online-label">online</span>
       </div>
 
+      <div class="listening-pill" id="listeningPill" style="display:none;" aria-live="polite">
+        🎧 <span id="listeningCount">0</span> listening now<span id="listeningTrackWrap"> · <span id="listeningTrack"></span></span>
+      </div>
+
       <h1>झारखंडी धुन</h1>
 
       <div class="hero-ctas">
         <button class="btn btn-primary" id="heroPlayBtn">▶ Play the radio</button>
+        <button class="btn btn-outline" id="heroFavPlayBtn">♥ Play my favorites</button>
         <a href="#about" class="btn btn-outline">Learn more</a>
       </div>
 
@@ -658,6 +735,10 @@
             </button>
             <button class="icon-btn" id="heroNext" aria-label="Next track">
               <svg viewBox="0 0 24 24"><polygon points="5,4 5,20 16,12"/><rect x="16" y="4" width="3" height="16"/></svg>
+            </button>
+            <button class="icon-btn fav-btn" id="heroFavBtn" aria-label="Favorite this track">
+              <svg id="favIconOutline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.35-9.5-8.36C.8 9.28 2 5.5 5.5 4.5c2-.57 3.8.3 4.9 2 .3.46.5.9.6 1.2.1-.3.3-.74.6-1.2 1.1-1.7 2.9-2.57 4.9-2 3.5 1 4.7 4.78 3 8.14C19 16.65 12 21 12 21z"/></svg>
+              <svg id="favIconFilled" viewBox="0 0 24 24" style="display:none;"><path d="M12 21s-7-4.35-9.5-8.36C.8 9.28 2 5.5 5.5 4.5c2-.57 3.8.3 4.9 2 .3.46.5.9.6 1.2.1-.3.3-.74.6-1.2 1.1-1.7 2.9-2.57 4.9-2 3.5 1 4.7 4.78 3 8.14C19 16.65 12 21 12 21z"/></svg>
             </button>
             <div class="volume-wrap">
               <div class="volume-popup" id="volumePopup">
@@ -711,6 +792,14 @@
         </div>
       </div>
     </div>
+  </section>
+
+  <section class="panel" id="trending">
+    <div class="section-head">
+      <h2>Trending now</h2>
+      <span class="hin-sub">सबसे ज़्यादा सुना गया</span>
+    </div>
+    <div id="trendingList"><p class="trend-empty">Play counts will appear here once people start listening.</p></div>
   </section>
 
   <section class="panel" id="faq">
@@ -876,6 +965,10 @@ const els = {
   volumeSlider: document.getElementById("volumeSlider"),
   volumeIcon: document.getElementById("volumeIcon"),
   muteIcon: document.getElementById("muteIcon"),
+
+  heroFavBtn: document.getElementById("heroFavBtn"),
+  favIconOutline: document.getElementById("favIconOutline"),
+  favIconFilled: document.getElementById("favIconFilled"),
 };
 
 function formatTime(sec) {
@@ -883,6 +976,36 @@ function formatTime(sec) {
   const m = Math.floor(sec / 60);
   const s = Math.floor(sec % 60).toString().padStart(2, "0");
   return `${m}:${s}`;
+}
+
+/* ---------- favorites (per-browser, localStorage) ---------- */
+const FAV_KEY = "jharkhandiDhun.favorites";
+function getFavorites() {
+  try { return JSON.parse(localStorage.getItem(FAV_KEY)) || []; } catch (e) { return []; }
+}
+function saveFavorites(list) {
+  try { localStorage.setItem(FAV_KEY, JSON.stringify(list)); } catch (e) { /* private mode etc. */ }
+}
+function isFavorite(youtubeId) {
+  return !!youtubeId && getFavorites().includes(youtubeId);
+}
+function toggleFavorite(youtubeId) {
+  const favs = getFavorites();
+  const idx = favs.indexOf(youtubeId);
+  if (idx === -1) favs.push(youtubeId); else favs.splice(idx, 1);
+  saveFavorites(favs);
+  return favs.includes(youtubeId);
+}
+function updateFavButtonUI(track) {
+  const active = !!(track && isFavorite(track.youtubeId));
+  els.heroFavBtn.classList.toggle("active", active);
+  els.favIconOutline.style.display = active ? "none" : "block";
+  els.favIconFilled.style.display = active ? "block" : "none";
+}
+function updateFavPlayBtnLabel() {
+  const n = getFavorites().length;
+  const btn = document.getElementById("heroFavPlayBtn");
+  if (btn) btn.textContent = n > 0 ? `♥ Play my favorites (${n})` : "♥ Play my favorites";
 }
 
 function renderPlayIcons(playing) {
@@ -909,6 +1032,7 @@ function loadTrack(trackIndex, autoplay = true) {
 
   els.heroTrackName.textContent = track.title;
   els.heroTrackArtist.textContent = `${track.artist} · ${track.year}`;
+  updateFavButtonUI(track);
 
   resetProgressDisplay();
 
@@ -930,6 +1054,8 @@ function loadTrack(trackIndex, autoplay = true) {
 
   if (autoplay) {
     ytPlayer.loadVideoById(track.youtubeId);
+    recordPlay(trackIndex);
+    setNowPlaying(track);
   } else {
     ytPlayer.cueVideoById(track.youtubeId);
   }
@@ -1005,6 +1131,28 @@ function playPrev() {
 els.heroToggle.addEventListener("click", togglePlay);
 els.heroNext.addEventListener("click", playNext);
 els.heroPrev.addEventListener("click", playPrev);
+
+els.heroFavBtn.addEventListener("click", () => {
+  if (currentTrackIndex === null) return;
+  const track = TRACKS[currentTrackIndex];
+  if (!track || !track.youtubeId) return;
+  toggleFavorite(track.youtubeId);
+  updateFavButtonUI(track);
+  updateFavPlayBtnLabel();
+});
+
+document.getElementById("heroFavPlayBtn").addEventListener("click", () => {
+  const favs = getFavorites();
+  const indices = TRACKS
+    .map((t, i) => ({ id: t.youtubeId, i }))
+    .filter(x => favs.includes(x.id))
+    .map(x => x.i);
+  if (indices.length === 0) {
+    alert("No favorites yet — tap the heart on the player while a song is playing to save it.");
+    return;
+  }
+  playQueue(indices, 0);
+});
 
 /* ---------- volume ---------- */
 function updateVolumeIcon(level) {
@@ -1133,13 +1281,14 @@ supportModal.addEventListener("click", (e) => {
   if (e.target === supportModal) supportModal.classList.remove("open");
 });
 
-/* ---------- real "online now" presence, via Firebase Realtime Database ----------
-   This is a genuine count of currently-connected browser tabs, not a
-   fabricated number: each visitor writes a "presence/<random-id>" = true
-   entry while connected, which Firebase auto-removes the instant their
-   connection drops (tab closed, network lost, etc. — via onDisconnect()).
-   The pill just counts how many such entries currently exist. */
-(function setupPresence() {
+/* =========================================================
+   Firebase Realtime Database: presence, now-playing, play
+   counts, and song requests. All real data, nothing fabricated.
+   ========================================================= */
+let db = null;
+const myClientId = Math.random().toString(36).slice(2) + Date.now().toString(36);
+
+function initFirebase() {
   const firebaseConfig = {
     projectId: "nagpuri-dhun",
     appId: "1:20310695621:web:ba2403a22329fca4069aac",
@@ -1148,33 +1297,151 @@ supportModal.addEventListener("click", (e) => {
     authDomain: "nagpuri-dhun.firebaseapp.com",
     messagingSenderId: "20310695621",
   };
-  const onlineCountEl = document.getElementById("onlineCount");
-  if (typeof firebase === "undefined" || !onlineCountEl) return;
-
+  if (typeof firebase === "undefined") return;
   try {
     firebase.initializeApp(firebaseConfig);
+    db = firebase.database();
   } catch (e) {
-    return; // if Firebase fails to load/init, the pill just keeps its "—" placeholder
+    return; // if Firebase fails to load/init, all the live features just stay at their placeholders
   }
 
-  const db = firebase.database();
-  const myId = Math.random().toString(36).slice(2) + Date.now().toString(36);
-  const myPresenceRef = db.ref("presence/" + myId);
-  const presenceListRef = db.ref("presence");
-
+  /* ---- "online now": real count of connected browser tabs ---- */
+  const myPresenceRef = db.ref("presence/" + myClientId);
   db.ref(".info/connected").on("value", (snap) => {
     if (snap.val() === true) {
       myPresenceRef.onDisconnect().remove();
       myPresenceRef.set(true);
     }
   });
-
-  presenceListRef.on("value", (snap) => {
-    const count = snap.exists() ? Object.keys(snap.val()).length : 0;
-    onlineCountEl.textContent = count;
+  db.ref("presence").on("value", (snap) => {
+    const el = document.getElementById("onlineCount");
+    if (el) el.textContent = snap.exists() ? Object.keys(snap.val()).length : 0;
   });
-})();
 
+  /* ---- "listening now": what real visitors are currently playing ---- */
+  db.ref("nowPlaying").on("value", (snap) => {
+    const pill = document.getElementById("listeningPill");
+    if (!pill) return;
+    const entries = Object.values(snap.val() || {});
+    if (entries.length === 0) {
+      pill.style.display = "none";
+      return;
+    }
+    pill.style.display = "inline-flex";
+    document.getElementById("listeningCount").textContent = entries.length;
+    const tally = {};
+    entries.forEach((e) => { tally[e.title] = (tally[e.title] || 0) + 1; });
+    let topTitle = null, topCount = 0;
+    Object.entries(tally).forEach(([title, c]) => { if (c > topCount) { topTitle = title; topCount = c; } });
+    const wrap = document.getElementById("listeningTrackWrap");
+    if (topTitle) {
+      document.getElementById("listeningTrack").textContent = topTitle;
+      wrap.style.display = "inline";
+    } else {
+      wrap.style.display = "none";
+    }
+  });
+
+  /* ---- trending / most-played ---- */
+  db.ref("playCounts").on("value", (snap) => {
+    renderTrending(snap.val() || {});
+  });
+}
+
+function setNowPlaying(track) {
+  if (!db) return;
+  const ref = db.ref("nowPlaying/" + myClientId);
+  ref.onDisconnect().remove();
+  ref.set({ title: track.title, artist: track.artist, ts: Date.now() });
+}
+
+function recordPlay(trackIndex) {
+  if (!db) return;
+  db.ref("playCounts/" + trackIndex).transaction((current) => (current || 0) + 1);
+}
+
+function renderTrending(counts) {
+  const list = document.getElementById("trendingList");
+  if (!list) return;
+  const ranked = TRACKS
+    .map((t, i) => ({ ...t, i, plays: counts[i] || 0 }))
+    .filter((t) => t.plays > 0)
+    .sort((a, b) => b.plays - a.plays)
+    .slice(0, 5);
+  if (ranked.length === 0) {
+    list.innerHTML = '<p class="trend-empty">Play counts will appear here once people start listening.</p>';
+    return;
+  }
+  list.innerHTML = "";
+  ranked.forEach((t, idx) => {
+    const row = document.createElement("div");
+    row.className = "trend-row";
+    row.innerHTML = `
+      <span class="trend-rank">${idx + 1}</span>
+      <div class="trend-main">
+        <div class="t-title">${t.title}</div>
+        <div class="t-artist">${t.artist}</div>
+      </div>
+      <span class="trend-plays">${t.plays} play${t.plays === 1 ? "" : "s"}</span>
+    `;
+    row.addEventListener("click", () => playQueue(TRACKS.map((_, i2) => i2), t.i));
+    list.appendChild(row);
+  });
+}
+
+/* ---------- song requests modal ---------- */
+const requestModal = document.getElementById("requestModal");
+document.getElementById("requestOpen").addEventListener("click", () => {
+  requestModal.classList.add("open");
+  document.getElementById("siteNav").classList.remove("open");
+});
+document.getElementById("requestClose").addEventListener("click", () => {
+  requestModal.classList.remove("open");
+});
+requestModal.addEventListener("click", (e) => {
+  if (e.target === requestModal) requestModal.classList.remove("open");
+});
+document.getElementById("requestForm").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const urlInput = document.getElementById("reqUrl");
+  const noteInput = document.getElementById("reqNote");
+  const statusEl = document.getElementById("reqStatus");
+  const submitBtn = document.getElementById("reqSubmitBtn");
+  const url = urlInput.value.trim();
+
+  if (!db) {
+    statusEl.textContent = "Requests aren't available right now — try again later.";
+    statusEl.className = "req-status err";
+    return;
+  }
+  if (!/^https?:\/\/(www\.)?(youtube\.com|youtu\.be)\//.test(url)) {
+    statusEl.textContent = "Please paste a real YouTube link.";
+    statusEl.className = "req-status err";
+    return;
+  }
+  submitBtn.disabled = true;
+  db.ref("requests").push({ url, note: noteInput.value.trim().slice(0, 120), ts: Date.now() })
+    .then(() => {
+      statusEl.textContent = "Thanks! Your request has been sent for review.";
+      statusEl.className = "req-status ok";
+      urlInput.value = "";
+      noteInput.value = "";
+      setTimeout(() => {
+        requestModal.classList.remove("open");
+        statusEl.textContent = "";
+      }, 1800);
+    })
+    .catch(() => {
+      statusEl.textContent = "Something went wrong — try again.";
+      statusEl.className = "req-status err";
+    })
+    .finally(() => {
+      submitBtn.disabled = false;
+    });
+});
+
+updateFavPlayBtnLabel();
+initFirebase();
 </script>
 
 </body>
