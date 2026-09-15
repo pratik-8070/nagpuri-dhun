@@ -411,6 +411,25 @@
   }
   @keyframes bob{0%,100%{transform:translateY(0); opacity:.55;} 50%{transform:translateY(6px); opacity:1;}}
 
+  /* ---------- hero load-in animation ---------- */
+  @keyframes heroFadeUp{
+    from{opacity:0; transform:translateY(18px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+  @keyframes heroFadeUpCentered{
+    from{opacity:0; transform:translateX(-50%) translateY(18px);}
+    to{opacity:1; transform:translateX(-50%) translateY(0);}
+  }
+  @media (prefers-reduced-motion: no-preference){
+    .online-pill{animation:heroFadeUp .6s ease-out .15s both;}
+    .hero h1{animation:heroFadeUp .7s ease-out .3s both;}
+    .hero-ctas{animation:heroFadeUp .7s ease-out .5s both;}
+    .hero-player-wrap{animation:heroFadeUpCentered .7s ease-out .65s both;}
+  }
+  @media (max-width:640px){
+    .hero-player-wrap{animation-name:heroFadeUp;}
+  }
+
   /* ---------- sections ---------- */
   section.panel{
     padding:64px 5vw;
