@@ -150,7 +150,6 @@
     overflow:hidden;
   }
   .qr-frame img{width:100%; height:100%; object-fit:contain;}
-  .qr-missing{font-size:.8rem; color:#8a6a3a; padding:12px; text-align:center;}
   .qr-hint{font-size:.78rem !important; color:rgba(33,21,8,.55) !important; margin-top:12px !important;}
 
   /* ---------- hero ---------- */
@@ -250,9 +249,9 @@
     position:absolute;
     z-index:2;
     left:50%;
-    bottom:100px;
+    bottom:150px;
     transform:translateX(-50%);
-    width:min(92%, 460px);
+    width:min(94%, 680px);
   }
   .glass-player{
     display:flex;
@@ -535,7 +534,7 @@
     .hero-inner{padding:90px 5vw 190px;}
     .hero-ctas{flex-direction:column; align-items:stretch;}
     .btn{width:100%; text-align:center;}
-    .hero-player-wrap{left:12px; right:12px; bottom:50px; width:auto; transform:none;}
+    .hero-player-wrap{left:12px; right:12px; bottom:78px; width:auto; transform:none;}
     section.panel{padding:48px 5vw;}
     section.panel.alt-bg > .inner{padding:0;}
     .welcome-cards{grid-template-columns:1fr;}
@@ -573,12 +572,9 @@
     <p>This is a free, ad-free passion project for Jharkhand's Sadri &amp; Nagpuri music.
        If you enjoy it, any amount via UPI helps keep it running.</p>
     <div class="qr-frame">
-      <!-- support-qr.png not added yet — swap in the real UPI QR file and this
-           placeholder text disappears automatically. -->
-      <img src="support-qr.png" alt="UPI QR code to support Jharkhandi Dhun" id="supportQrImg"
-           onerror="this.replaceWith(Object.assign(document.createElement('div'), {className:'qr-missing', textContent:'QR code not added yet — see about section for how to add it.'}));">
+      <img src="support-qr.jpg" alt="UPI QR code to support Jharkhandi Dhun" id="supportQrImg">
     </div>
-    <a class="btn btn-primary" href="support-qr.png" download="jharkhandi-dhun-support-qr.png" id="qrDownload">⬇ Download QR code</a>
+    <a class="btn btn-primary" href="support-qr.jpg" download="jharkhandi-dhun-support-qr.jpg" id="qrDownload">⬇ Download QR code</a>
     <p class="qr-hint">Scan with any UPI app (Google Pay, PhonePe, Paytm…)</p>
   </div>
 </div>
