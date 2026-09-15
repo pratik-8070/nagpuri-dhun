@@ -199,6 +199,33 @@
       linear-gradient(to right, rgba(20,12,4,.4) 0%, transparent 25%, transparent 75%, rgba(20,12,4,.4) 100%);
     pointer-events:none;
   }
+  .online-pill{
+    position:absolute;
+    z-index:2;
+    top:24px; left:24px;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background:rgba(20,12,4,.75);
+    border:1px solid rgba(246,236,210,.25);
+    border-radius:999px;
+    padding:8px 16px;
+    font-size:13px;
+    font-weight:700;
+    color:var(--cream);
+  }
+  .online-dot{
+    width:8px; height:8px; border-radius:50%;
+    background:#3ddc84;
+    box-shadow:0 0 0 0 rgba(61,220,132,.6);
+    animation:onlinePulse 1.8s infinite;
+  }
+  @keyframes onlinePulse{
+    0%{box-shadow:0 0 0 0 rgba(61,220,132,.55);}
+    70%{box-shadow:0 0 0 8px rgba(61,220,132,0);}
+    100%{box-shadow:0 0 0 0 rgba(61,220,132,0);}
+  }
+  .online-label{font-weight:400; color:rgba(246,236,210,.6); font-size:12px;}
   .hero h1{
     position:relative;
     z-index:2;
@@ -590,6 +617,12 @@
 
       <div class="hero-overlay"></div>
 
+      <div class="online-pill" aria-live="polite" title="Real count of currently-connected visitors">
+        <span class="online-dot"></span>
+        <span id="onlineCount">—</span>
+        <span class="online-label">online</span>
+      </div>
+
       <h1>झारखंडी धुन</h1>
 
       <div class="hero-ctas">
@@ -708,6 +741,14 @@
      which YouTube's API won't reliably play through) but visually hidden and
      off-screen, so only the site's own glass controls are visible. -->
 <div id="ytPlayerHost" style="position:fixed; left:-9999px; top:-9999px; width:2px; height:2px; overflow:hidden;"></div>
+
+<!-- Firebase Realtime Database: powers the real "online now" presence
+     count (see the "presence" logic near the bottom of the script below).
+     The apiKey below is a public client identifier, not a secret — Firebase
+     web apps are meant to ship it; access is controlled by the database's
+     security rules instead. -->
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-database-compat.js"></script>
 
 <script>
 /* =========================================================
@@ -1091,6 +1132,48 @@ document.getElementById("supportClose").addEventListener("click", () => {
 supportModal.addEventListener("click", (e) => {
   if (e.target === supportModal) supportModal.classList.remove("open");
 });
+
+/* ---------- real "online now" presence, via Firebase Realtime Database ----------
+   This is a genuine count of currently-connected browser tabs, not a
+   fabricated number: each visitor writes a "presence/<random-id>" = true
+   entry while connected, which Firebase auto-removes the instant their
+   connection drops (tab closed, network lost, etc. — via onDisconnect()).
+   The pill just counts how many such entries currently exist. */
+(function setupPresence() {
+  const firebaseConfig = {
+    projectId: "nagpuri-dhun",
+    appId: "1:20310695621:web:ba2403a22329fca4069aac",
+    databaseURL: "https://nagpuri-dhun-default-rtdb.firebaseio.com",
+    apiKey: "AIzaSyBVfjhEb82FJt4RGq09qfnV8USsLx4b-2Y",
+    authDomain: "nagpuri-dhun.firebaseapp.com",
+    messagingSenderId: "20310695621",
+  };
+  const onlineCountEl = document.getElementById("onlineCount");
+  if (typeof firebase === "undefined" || !onlineCountEl) return;
+
+  try {
+    firebase.initializeApp(firebaseConfig);
+  } catch (e) {
+    return; // if Firebase fails to load/init, the pill just keeps its "—" placeholder
+  }
+
+  const db = firebase.database();
+  const myId = Math.random().toString(36).slice(2) + Date.now().toString(36);
+  const myPresenceRef = db.ref("presence/" + myId);
+  const presenceListRef = db.ref("presence");
+
+  db.ref(".info/connected").on("value", (snap) => {
+    if (snap.val() === true) {
+      myPresenceRef.onDisconnect().remove();
+      myPresenceRef.set(true);
+    }
+  });
+
+  presenceListRef.on("value", (snap) => {
+    const count = snap.exists() ? Object.keys(snap.val()).length : 0;
+    onlineCountEl.textContent = count;
+  });
+})();
 
 </script>
 
