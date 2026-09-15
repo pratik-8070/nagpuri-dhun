@@ -317,34 +317,6 @@
   }
   .about-box strong{color:var(--teal-light);}
 
-  /* ---------- rotation strip ---------- */
-  .rotation-grid{
-    display:grid;
-    grid-template-columns:repeat(4, 1fr);
-    gap:16px;
-  }
-  .rotation-card{
-    background:rgba(255,255,255,.03);
-    border:1px solid rgba(255,255,255,.1);
-    border-radius:18px;
-    padding:22px 20px;
-    cursor:pointer;
-    transition:border-color .2s ease, background .2s ease, transform .15s ease;
-  }
-  .rotation-card:hover{background:rgba(255,255,255,.06); transform:translateY(-2px);}
-  .rotation-card.active{
-    border-color:var(--teal);
-    background:radial-gradient(circle at 20% 0%, rgba(20,184,166,.18), transparent 70%);
-    box-shadow:0 0 0 1px rgba(20,184,166,.25) inset;
-  }
-  .rotation-card .r-time{font-size:.75rem; letter-spacing:.04em; color:rgba(255,255,255,.45); font-family:monospace;}
-  .rotation-card .r-hin{font-family:'Yatra One', cursive; font-size:1.35rem; color:var(--amber-light); margin-top:10px; display:block;}
-  .rotation-card .r-en{font-size:.9rem; color:rgba(255,255,255,.6); margin-top:2px; display:block;}
-  .rotation-card .r-now{
-    display:inline-block; margin-top:12px; font-size:.65rem; font-weight:700; letter-spacing:.06em;
-    color:#00251f; background:var(--teal-light); padding:3px 10px; border-radius:999px;
-  }
-
   /* ---------- playlists ---------- */
   .playlist-row{
     display:flex; align-items:center; justify-content:space-between; gap:20px;
@@ -444,7 +416,6 @@
 
   /* ---------- responsive ---------- */
   @media (max-width:900px){
-    .rotation-grid{grid-template-columns:repeat(2, 1fr);}
     .player-note{display:none !important;}
     .player-info{flex-basis:130px;}
   }
@@ -537,9 +508,15 @@
           <div class="glass-note" id="heroNote" style="display:none;"></div>
         </div>
         <div class="player-actions">
+          <button class="icon-btn" id="heroPrev" aria-label="Previous track">
+            <svg viewBox="0 0 24 24"><polygon points="19,4 19,20 8,12"/><rect x="5" y="4" width="3" height="16"/></svg>
+          </button>
           <button class="icon-btn play-btn" id="heroToggle" aria-label="Play or pause">
             <svg id="heroPlayIcon" viewBox="0 0 24 24"><polygon points="6,4 20,12 6,20"/></svg>
             <svg id="heroPauseIcon" viewBox="0 0 24 24" style="display:none;"><rect x="5" y="4" width="5" height="16"/><rect x="14" y="4" width="5" height="16"/></svg>
+          </button>
+          <button class="icon-btn" id="heroNext" aria-label="Next track">
+            <svg viewBox="0 0 24 24"><polygon points="5,4 5,20 16,12"/><rect x="16" y="4" width="3" height="16"/></svg>
           </button>
         </div>
       </div>
@@ -549,14 +526,6 @@
       <span>SCROLL</span>
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v16M6 14l6 6 6-6"/></svg>
     </div>
-  </section>
-
-  <section class="panel" id="rotations">
-    <div class="section-head">
-      <h2>Time-based rotation</h2>
-      <span class="hin-sub">समय के अनुसार</span>
-    </div>
-    <div class="rotation-grid" id="rotationGrid"></div>
   </section>
 
   <section class="panel" id="playlists">
@@ -619,9 +588,15 @@
 
 <div class="player-bar" id="playerBar">
   <div class="player-bar-inner">
+    <button class="icon-btn" id="playerPrev" aria-label="Previous track">
+      <svg viewBox="0 0 24 24"><polygon points="19,4 19,20 8,12"/><rect x="5" y="4" width="3" height="16"/></svg>
+    </button>
     <button class="icon-btn play-btn" id="playerToggle" aria-label="Play or pause">
       <svg id="playIcon" viewBox="0 0 24 24"><polygon points="6,4 20,12 6,20"/></svg>
       <svg id="pauseIcon" viewBox="0 0 24 24" style="display:none;"><rect x="5" y="4" width="5" height="16"/><rect x="14" y="4" width="5" height="16"/></svg>
+    </button>
+    <button class="icon-btn" id="playerNext" aria-label="Next track">
+      <svg viewBox="0 0 24 24"><polygon points="5,4 5,20 16,12"/><rect x="16" y="4" width="3" height="16"/></svg>
     </button>
     <div class="player-info">
       <div class="p-title" id="playerTitle">Nothing playing yet</div>
@@ -749,7 +724,9 @@ let progressTimer = null;
 
 const els = {
   playerBar: document.getElementById("playerBar"),
+  playerPrev: document.getElementById("playerPrev"),
   playerToggle: document.getElementById("playerToggle"),
+  playerNext: document.getElementById("playerNext"),
   playIcon: document.getElementById("playIcon"),
   pauseIcon: document.getElementById("pauseIcon"),
   playerTitle: document.getElementById("playerTitle"),
@@ -764,7 +741,9 @@ const els = {
   heroTrackName: document.getElementById("heroTrackName"),
   heroTrackArtist: document.getElementById("heroTrackArtist"),
   heroNote: document.getElementById("heroNote"),
+  heroPrev: document.getElementById("heroPrev"),
   heroToggle: document.getElementById("heroToggle"),
+  heroNext: document.getElementById("heroNext"),
   heroPlayIcon: document.getElementById("heroPlayIcon"),
   heroPauseIcon: document.getElementById("heroPauseIcon"),
   heroProgressFill: document.getElementById("heroProgressFill"),
@@ -895,8 +874,30 @@ function seekFromClick(e, trackEl) {
 els.progressTrack.addEventListener("click", (e) => seekFromClick(e, els.progressTrack));
 els.heroProgressTrack.addEventListener("click", (e) => seekFromClick(e, els.heroProgressTrack));
 
+function playNext() {
+  if (queue.length === 0) {
+    startRotation(getCurrentRotationKey());
+    return;
+  }
+  queuePos = (queuePos + 1) % queue.length;
+  loadTrack(queue[queuePos], true);
+}
+
+function playPrev() {
+  if (queue.length === 0) {
+    startRotation(getCurrentRotationKey());
+    return;
+  }
+  queuePos = (queuePos - 1 + queue.length) % queue.length;
+  loadTrack(queue[queuePos], true);
+}
+
 els.playerToggle.addEventListener("click", togglePlay);
 els.heroToggle.addEventListener("click", togglePlay);
+els.playerNext.addEventListener("click", playNext);
+els.heroNext.addEventListener("click", playNext);
+els.playerPrev.addEventListener("click", playPrev);
+els.heroPrev.addEventListener("click", playPrev);
 
 /* ---------- YouTube IFrame Player API wiring ---------- */
 // Loads YouTube's official embed script asynchronously; it calls
@@ -971,28 +972,13 @@ function startRotation(key) {
 }
 
 /* ---------- rendering ---------- */
-function renderRotationGrid() {
-  const grid = document.getElementById("rotationGrid");
+function updateHeroRotationLabel() {
   const currentKey = getCurrentRotationKey();
   const heroLabel = document.getElementById("heroRotationLabel");
   const currentDef = ROTATIONS.find(r => r.key === currentKey);
   if (currentDef) {
     heroLabel.textContent = `Now: ${currentDef.hin} · ${currentDef.en}`;
   }
-
-  grid.innerHTML = "";
-  ROTATIONS.forEach(r => {
-    const card = document.createElement("div");
-    card.className = "rotation-card" + (r.key === currentKey ? " active" : "");
-    card.innerHTML = `
-      <span class="r-time">${r.time} IST</span>
-      <span class="r-hin">${r.hin}</span>
-      <span class="r-en">${r.en}</span>
-      ${r.key === currentKey ? '<span class="r-now">NOW</span>' : ""}
-    `;
-    card.addEventListener("click", () => startRotation(r.key));
-    grid.appendChild(card);
-  });
 }
 
 function renderPlaylists() {
@@ -1064,11 +1050,11 @@ document.getElementById("heroPlayBtn").addEventListener("click", () => {
 });
 
 /* ---------- init ---------- */
-renderRotationGrid();
+updateHeroRotationLabel();
 renderPlaylists();
 renderSongs();
 
-setInterval(renderRotationGrid, 60 * 1000);
+setInterval(updateHeroRotationLabel, 60 * 1000);
 </script>
 
 </body>
