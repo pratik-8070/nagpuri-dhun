@@ -582,13 +582,13 @@
       </div>
       <p class="about-lede">Nagpuri Dhun — Purani Sadri Dhun, Nayi Digital Vibe</p>
       <div class="about-box">
-        <strong>This is a template.</strong> The eight tracks listed here are
-        placeholder entries with empty <code>audioUrl</code> fields — no audio
-        is bundled. To make the radio actually play, supply your own licensed
-        sources: self-hosted files you hold rights to, or swap the
-        <code>&lt;audio&gt;</code> element logic for a YouTube IFrame Player API
-        or Spotify Embed integration. Song titles, artists, and years shown are
-        illustrative placeholders, not real releases.
+        <strong>Playback runs on YouTube's official IFrame Player API</strong> —
+        a free, embed-compliant way to stream real videos, with the player itself
+        tucked off-screen so only this site's glass controls show. Every track
+        plays a real, publicly available Nagpuri/Sadri video by its original
+        singer or channel; titles and channel names are shown as credited on
+        YouTube. Playback (and any ads) is delivered and governed entirely by
+        YouTube — this site does not host, download, or redistribute audio.
       </div>
     </div>
   </section>
@@ -603,8 +603,8 @@
       <p>A browser-based always-on radio concept for Jharkhand's Sadri and Nagpuri music, rotating mood by time of day — no app, no login.</p>
     </details>
     <details class="faq-item">
-      <summary>Why don't the songs play yet?<svg class="faq-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></summary>
-      <p>Every track's <code>audioUrl</code> is left empty on purpose — this is a template. Add your own licensed audio source to hear playback.</p>
+      <summary>Where does the audio actually come from?<svg class="faq-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></summary>
+      <p>Each track streams from YouTube via the official IFrame Player API, embedded off-screen — this site's controls just drive that hidden player. If a video's owner ever disables embedding or removes it, that track will show a short error instead of failing silently.</p>
     </details>
     <details class="faq-item">
       <summary>How is the rotation decided?<svg class="faq-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></summary>
@@ -638,35 +638,33 @@
   </div>
 </div>
 
-<audio id="audioEl" preload="none"></audio>
+<!-- YouTube IFrame Player mounts here. Kept in the document (not display:none,
+     which YouTube's API won't reliably play through) but visually hidden and
+     off-screen, so only the site's own glass controls are visible. -->
+<div id="ytPlayerHost" style="position:fixed; left:-9999px; top:-9999px; width:2px; height:2px; overflow:hidden;"></div>
 
 <script>
 /* =========================================================
    TRACKS
    -----------------------------------------------------------
-   audioUrl is intentionally left as "" for every track. Plug in
-   your own licensed audio: either self-hosted files you have
-   rights to (point audioUrl at that file path/URL and the
-   built-in <audio> element below will just work), or replace the
-   playback logic in loadTrack()/togglePlay() with a YouTube
-   IFrame Player API or Spotify Web Playback SDK / embed if you'd
-   rather stream from those platforms instead of self-hosting.
+   Each track plays via the YouTube IFrame Player API using a real,
+   publicly embeddable YouTube video ID (`youtubeId`). Titles/artists
+   are the actual video title and channel name as credited on YouTube
+   (found by searching for real Sadri/Nagpuri folk, wedding geet, and
+   modern Nagpuri pop videos with embedding enabled). To add or swap a
+   track: grab the "v=" value from a YouTube URL — for
+   https://www.youtube.com/watch?v=abc123XYZ that's "abc123XYZ" — set
+   it as youtubeId, and fill in the rotation slot it belongs to.
    ========================================================= */
 const TRACKS = [
-  { title: "भोर के बोल",        artist: "Sita Devi & Group",     year: 2014, rotation: "dawn",      audioUrl: "" },
-  { title: "Gaon Ke Bhor",       artist: "Mangra Oraon",          year: 2018, rotation: "dawn",      audioUrl: "" },
-  { title: "दोपहरिया छाँव",      artist: "Phulmani Tirkey",       year: 2011, rotation: "afternoon", audioUrl: "" },
-  { title: "Chalo Bazaar",       artist: "Nagpuri Sathi Band",    year: 2020, rotation: "afternoon", audioUrl: "" },
-  { title: "साँझ की बेला",       artist: "Ramesh & Sunita",       year: 2016, rotation: "evening",   audioUrl: "" },
-  { title: "Dulhin Ke Geet",     artist: "Birsa Lohra Group",     year: 2009, rotation: "evening",   audioUrl: "" },
-  { title: "रात के मंडा",        artist: "Chotu Nagpuri",         year: 2022, rotation: "night",     audioUrl: "" },
-  { title: "Nagpuri Night Mix",  artist: "DJ Sohrai Beats",       year: 2023, rotation: "night",     audioUrl: "" },
-
-  // DEMO TRACK — this one actually plays. It points at a free public-domain
-  // test MP3 (SoundHelix), NOT a real Nagpuri song, just so you can see and
-  // hear the player, queueing, and progress bar working end to end. Swap
-  // audioUrl below for your own licensed file/link, then edit title/artist.
-  { title: "Demo Track (test audio — replace me)", artist: "SoundHelix (placeholder)", year: 2024, rotation: "afternoon", audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" }
+  { title: "New Nagpuri Song 2019 | Sadri Hop Music Official", artist: "Sadri Hop Music",     year: 2019, rotation: "dawn",      youtubeId: "Z3a7GxS05sQ" },
+  { title: "बाली उमरिया",                                        artist: "Narayan Nayak",       year: 2024, rotation: "dawn",      youtubeId: "sETT0IFVWHw" },
+  { title: "Tera Gora Rang — New Nagpuri Sadri Dance",            artist: "Santosh Daswali",     year: 2025, rotation: "afternoon", youtubeId: "7YN_Mra56zo" },
+  { title: "Dhire Dhire Nach",                                    artist: "Vinay & Anita Bara",  year: 2024, rotation: "afternoon", youtubeId: "UqSlmGn_bbQ" },
+  { title: "Nagpuri Wedding Song",                                artist: "Uma Kant",            year: 2017, rotation: "evening",   youtubeId: "KFMM1YgxHlI" },
+  { title: "Nagpuri Wedding Dance",                               artist: "Birju Kumar",         year: 2016, rotation: "evening",   youtubeId: "vMlCJzh03AQ" },
+  { title: "Hira Beta",                                           artist: "Avinash Nayak",       year: 2025, rotation: "night",     youtubeId: "PQA_6p6qxl4" },
+  { title: "O Re Sawariya — Official Nagpuri Video",              artist: "Ashish Tigga",        year: 2024, rotation: "night",     youtubeId: "54lzAkye5Ac" }
 ];
 
 const ROTATIONS = [
@@ -695,11 +693,15 @@ function getCurrentRotationKey() {
 }
 
 /* ---------- player state ---------- */
-const audioEl = document.getElementById("audioEl");
 let queue = [];
 let queuePos = 0;
 let currentTrackIndex = null;
 let isPlaying = false;
+
+let ytPlayer = null;
+let ytReady = false;
+let pendingTrackIndex = null;   // track requested before the API was ready
+let progressTimer = null;
 
 const els = {
   playerBar: document.getElementById("playerBar"),
@@ -742,6 +744,22 @@ function renderPlayIcons(playing) {
   els.heroDisc.classList.toggle("spinning", playing);
 }
 
+function setNote(text) {
+  els.playerNote.style.display = text ? "block" : "none";
+  els.playerNote.textContent = text || "";
+  els.heroNote.style.display = text ? "block" : "none";
+  els.heroNote.textContent = text || "";
+}
+
+function resetProgressDisplay() {
+  els.progressFill.style.width = "0%";
+  els.heroProgressFill.style.width = "0%";
+  els.pCurrent.textContent = "0:00";
+  els.pDuration.textContent = "0:00";
+  els.heroCurrent.textContent = "0:00";
+  els.heroDuration.textContent = "0:00";
+}
+
 function loadTrack(trackIndex, autoplay = true) {
   const track = TRACKS[trackIndex];
   if (!track) return;
@@ -754,43 +772,30 @@ function loadTrack(trackIndex, autoplay = true) {
 
   els.playerBar.classList.add("show");
   document.body.classList.add("has-player");
+  resetProgressDisplay();
+  highlightPlayingSong();
 
-  if (track.audioUrl) {
-    els.playerNote.style.display = "none";
-    els.playerNote.textContent = "";
-    els.heroNote.style.display = "none";
-    els.heroNote.textContent = "";
-    audioEl.src = track.audioUrl;
-    if (autoplay) {
-      audioEl.play().then(() => {
-        isPlaying = true;
-        renderPlayIcons(true);
-      }).catch(() => {
-        isPlaying = false;
-        renderPlayIcons(false);
-      });
-    }
-  } else {
-    // No audio source supplied — update UI only, don't fail silently.
-    audioEl.pause();
-    audioEl.removeAttribute("src");
+  if (!track.youtubeId) {
     isPlaying = false;
     renderPlayIcons(false);
-    els.progressFill.style.width = "0%";
-    els.heroProgressFill.style.width = "0%";
-    els.pCurrent.textContent = "0:00";
-    els.pDuration.textContent = "0:00";
-    els.heroCurrent.textContent = "0:00";
-    els.heroDuration.textContent = "0:00";
+    setNote("⚠ youtubeId not set for this track yet — add a real YouTube video ID.");
+    return;
+  }
+  setNote("");
 
-    const noteText = "⚠ audioUrl not set for this track yet — add your licensed source.";
-    els.playerNote.style.display = "block";
-    els.playerNote.textContent = noteText;
-    els.heroNote.style.display = "block";
-    els.heroNote.textContent = noteText;
+  if (!ytReady) {
+    // YouTube's API script hasn't finished loading yet — remember what to
+    // play and let onYouTubeIframeAPIReady() pick it up once it's ready.
+    pendingTrackIndex = trackIndex;
+    setNote("Loading player…");
+    return;
   }
 
-  highlightPlayingSong();
+  if (autoplay) {
+    ytPlayer.loadVideoById(track.youtubeId);
+  } else {
+    ytPlayer.cueVideoById(track.youtubeId);
+  }
 }
 
 function playQueue(trackIndices, startAt = 0) {
@@ -805,48 +810,107 @@ function togglePlay() {
     return;
   }
   const track = TRACKS[currentTrackIndex];
-  if (!track.audioUrl) return;
+  if (!track.youtubeId || !ytReady) return;
 
   if (isPlaying) {
-    audioEl.pause();
-    isPlaying = false;
-    renderPlayIcons(false);
+    ytPlayer.pauseVideo();
   } else {
-    audioEl.play().then(() => {
-      isPlaying = true;
-      renderPlayIcons(true);
-    }).catch(() => {});
+    ytPlayer.playVideo();
   }
 }
 
-audioEl.addEventListener("ended", () => {
-  if (queue.length === 0) return;
-  queuePos = (queuePos + 1) % queue.length;
-  loadTrack(queue[queuePos], true);
-});
+function startProgressTimer() {
+  stopProgressTimer();
+  progressTimer = setInterval(() => {
+    if (!ytPlayer || typeof ytPlayer.getDuration !== "function") return;
+    const duration = ytPlayer.getDuration();
+    const current = ytPlayer.getCurrentTime();
+    if (!duration) return;
+    const pct = (current / duration) * 100;
+    els.progressFill.style.width = pct + "%";
+    els.heroProgressFill.style.width = pct + "%";
+    els.pCurrent.textContent = formatTime(current);
+    els.pDuration.textContent = formatTime(duration);
+    els.heroCurrent.textContent = formatTime(current);
+    els.heroDuration.textContent = formatTime(duration);
+  }, 500);
+}
+function stopProgressTimer() {
+  if (progressTimer) clearInterval(progressTimer);
+  progressTimer = null;
+}
 
-audioEl.addEventListener("timeupdate", () => {
-  if (!audioEl.duration) return;
-  const pct = (audioEl.currentTime / audioEl.duration) * 100;
-  els.progressFill.style.width = pct + "%";
-  els.heroProgressFill.style.width = pct + "%";
-  els.pCurrent.textContent = formatTime(audioEl.currentTime);
-  els.pDuration.textContent = formatTime(audioEl.duration);
-  els.heroCurrent.textContent = formatTime(audioEl.currentTime);
-  els.heroDuration.textContent = formatTime(audioEl.duration);
-});
-
-function seekFromClick(e, track) {
-  if (!audioEl.duration) return;
-  const rect = track.getBoundingClientRect();
+function seekFromClick(e, trackEl) {
+  if (!ytPlayer || typeof ytPlayer.getDuration !== "function") return;
+  const duration = ytPlayer.getDuration();
+  if (!duration) return;
+  const rect = trackEl.getBoundingClientRect();
   const pct = (e.clientX - rect.left) / rect.width;
-  audioEl.currentTime = pct * audioEl.duration;
+  ytPlayer.seekTo(pct * duration, true);
 }
 els.progressTrack.addEventListener("click", (e) => seekFromClick(e, els.progressTrack));
 els.heroProgressTrack.addEventListener("click", (e) => seekFromClick(e, els.heroProgressTrack));
 
 els.playerToggle.addEventListener("click", togglePlay);
 els.heroToggle.addEventListener("click", togglePlay);
+
+/* ---------- YouTube IFrame Player API wiring ---------- */
+// Loads YouTube's official embed script asynchronously; it calls
+// window.onYouTubeIframeAPIReady itself once loaded.
+(function loadYouTubeAPI() {
+  const tag = document.createElement("script");
+  tag.src = "https://www.youtube.com/iframe_api";
+  document.head.appendChild(tag);
+})();
+
+window.onYouTubeIframeAPIReady = function () {
+  ytPlayer = new YT.Player("ytPlayerHost", {
+    height: "2",
+    width: "2",
+    playerVars: { playsinline: 1, controls: 0, disablekb: 1, modestbranding: 1 },
+    events: {
+      onReady: function () {
+        ytReady = true;
+        if (pendingTrackIndex !== null) {
+          const idx = pendingTrackIndex;
+          pendingTrackIndex = null;
+          loadTrack(idx, true);
+        }
+      },
+      onStateChange: function (event) {
+        // 1 = playing, 2 = paused, 0 = ended (per YT.PlayerState)
+        if (event.data === YT.PlayerState.PLAYING) {
+          isPlaying = true;
+          renderPlayIcons(true);
+          startProgressTimer();
+        } else if (event.data === YT.PlayerState.PAUSED) {
+          isPlaying = false;
+          renderPlayIcons(false);
+          stopProgressTimer();
+        } else if (event.data === YT.PlayerState.ENDED) {
+          isPlaying = false;
+          renderPlayIcons(false);
+          stopProgressTimer();
+          if (queue.length > 0) {
+            queuePos = (queuePos + 1) % queue.length;
+            loadTrack(queue[queuePos], true);
+          }
+        }
+      },
+      onError: function () {
+        // e.g. embedding disabled, video removed/private (YT error codes 2, 100, 101, 150)
+        isPlaying = false;
+        renderPlayIcons(false);
+        stopProgressTimer();
+        setNote("⚠ This video can't be embedded/played here — skipping to the next track.");
+        if (queue.length > 0) {
+          queuePos = (queuePos + 1) % queue.length;
+          setTimeout(() => loadTrack(queue[queuePos], true), 1200);
+        }
+      }
+    }
+  });
+};
 
 /* ---------- rotation helpers ---------- */
 function tracksForRotation(key) {
