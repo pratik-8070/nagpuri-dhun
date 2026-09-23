@@ -4,9 +4,23 @@
 
 🔗 **Live site:** [pratik-8070.github.io/nagpuri-dhun](https://pratik-8070.github.io/nagpuri-dhun/)
 
-![Jharkhandi Dhun hero](hero-bg.png)
+![Jharkhandi Dhun hero](screenshots/hero-desktop.jpg)
 
 Jharkhandi Dhun streams a rotating mix of real Sadri folk, wedding geet, and modern Nagpuri/Kurukh pop — no app, no sign-up, no ads. It's a single-page, single-file website styled after Jharkhand's own Sohrai/Khovar tribal wall-art tradition, with a real photo backdrop and a compact glass music player.
+
+<table>
+<tr>
+<td><img src="screenshots/welcome-desktop.jpg" alt="Welcome section and feature cards"></td>
+<td><img src="screenshots/trending-desktop.jpg" alt="Trending now leaderboard"></td>
+</tr>
+<tr>
+<td align="center"><sub>Welcome section + feature cards</sub></td>
+<td align="center"><sub>Real trending leaderboard</sub></td>
+</tr>
+</table>
+
+<img src="screenshots/hero-mobile.jpg" alt="Mobile view" width="280">
+<p><sub>Mobile view</sub></p>
 
 ## Features
 
