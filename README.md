@@ -10,14 +10,27 @@ Jharkhandi Dhun streams a rotating mix of real Sadri folk, wedding geet, and mod
 
 ## Features
 
+**Playback**
 - 🎵 **Real YouTube tracks** — every song streams through YouTube's official IFrame Player API, credited to its real singer/channel; nothing is downloaded or re-hosted
 - 🕐 **Time-based rotation** — the catalog is split into four moods (dawn / afternoon / evening / night) and defaults to whichever matches the current time in IST
-- ♥ **Favorites** — heart any track from the player; saved per-browser, with a one-click "play my favorites" queue
-- 🔥 **Trending now** — a real most-played leaderboard, tracked live in a database (not a static list)
-- 🎧 **Listening now** — shows how many real visitors are online and what most of them are currently playing
-- 🙋 **Song requests** — visitors can submit a YouTube link for review; nothing is auto-added to the catalog
-- 💬 **WhatsApp share** and a **Support Us** (UPI QR) button
-- 📱 Fully responsive, with a custom-drawn Sohrai-style dotted border frame and volume control
+- 🎚️ **Full player controls** — play/pause, previous/next, a draggable seek bar, and a volume popup slider with mute
+- ♥ **Favorites** — heart any track from the player; saved per-browser (no login needed), with a one-click "Play my favorites" queue
+
+**Live, real data — nothing fabricated**
+- 🟢 **Online now** — a real count of currently-connected visitors, via Firebase presence (auto-removed the instant a tab closes)
+- 🎧 **Listening now** — how many visitors are actually playing something right now, and what most of them are hearing
+- 🔥 **Trending now** — a top-5 leaderboard ranked by real play counts, tracked live in the database
+- 🙋 **Song requests** — visitors submit a YouTube link + note for the owner to review; nothing is auto-added to the catalog, and requests aren't publicly readable
+
+**Design**
+- 🎨 A full-bleed real photo hero inside a hand-drawn, dotted Sohrai-style picture-frame border
+- 🌗 Dark-glass floating UI (nav, buttons, player) over the photo, in a palette sampled directly from the hero image
+- ✨ Staggered fade-in animation for the hero on page load (respects `prefers-reduced-motion`)
+- 📱 Fully responsive, phone to desktop
+
+**Sharing & support**
+- 💬 One-tap **WhatsApp share** button (pre-fills the site link)
+- ♥ **Support Us** modal with a real UPI QR code for donations
 
 ## Tech stack
 
